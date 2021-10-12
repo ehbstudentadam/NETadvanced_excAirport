@@ -12,12 +12,14 @@ namespace AirportAdam
         private List<Aircraft> aircraftList = new();
         public List<Runway> Runways {  get; set; } = new List<Runway>();
 
+
+
         public string RegisterAircraft(Aircraft aircraft)
         { 
             aircraft.FlightNumber = RandomFilghtNumberGenerator();
             aircraft.Status = Aircraft.AircraftStatus.TakeoffToBeRequested;
             this.aircraftList.Add(aircraft);
-            return new StringBuilder($"Aircraft has been registered. Flightnumber: {aircraft.FlightNumber}").ToString();
+            return new StringBuilder().AppendLine($"Aircraft has been registered. Flightnumber: {aircraft.FlightNumber}").ToString();
         }
 
         public Aircraft? FindAircraft(string flightNumber)
@@ -29,15 +31,15 @@ namespace AirportAdam
         {
             if (FindAircraft(flightNumber) == null)
             {
-                return new StringBuilder($"Not Allowed. Flightnumber does not exist.").ToString();
+                return new StringBuilder().AppendLine($"Not Allowed. Flightnumber does not exist.").ToString();
             }
             else if (FindAircraft(flightNumber).Status != Aircraft.AircraftStatus.TakeoffToBeRequested)
             {
-                return new StringBuilder($"Not allowed. Current status must be TakeoffToBeRequested. Not {FindAircraft(flightNumber).Status}").ToString();
+                return new StringBuilder().AppendLine($"Not allowed. Current status must be TakeoffToBeRequested. Not {FindAircraft(flightNumber).Status}.").ToString();
             }
             else if (Runways.Exists(x => x.IsClear != true))
             {
-                return new StringBuilder($"No clear runway availlable at the moment.").ToString();
+                return new StringBuilder().AppendLine($"No clear runway availlable at the moment.").ToString();
             }
             else
             {
@@ -45,32 +47,31 @@ namespace AirportAdam
                 FindAircraft(flightNumber).AssignedRunway = SearchClearRunway();
                 FindAircraft(flightNumber).AssignedRunway.IsClear = false;
 
-                return new StringBuilder($"Takeoff allowed - Assigned runway: {FindAircraft(flightNumber).AssignedRunway.RunwayCode}").ToString();
+                return new StringBuilder().AppendLine($"Takeoff allowed - Assigned runway: {FindAircraft(flightNumber).AssignedRunway.RunwayCode}").ToString();
             }      
         }
 
-        public IEnumerator AircraftSummary()
+        public string AircraftSummary()
         {
-            foreach (Aircraft aircraft in aircraftList)
+            StringBuilder x = new StringBuilder().AppendLine("Aircraft Summary:");
+            foreach (Aircraft a in aircraftList)
             {
-                yield return aircraft.GiveDetails();
+                x.AppendLine(a.GiveDetails());
             }
+            return x.ToString();
         }
 
-        public IEnumerator<string> RunwaySummary()      //DIT IS DE FUNCTIE WAAR IK OP VAST ZIT
+        public string RunwaySummary()
         {
-            List<string> details = new();
-            foreach (Runway runway in Runways)
+            StringBuilder x = new StringBuilder().AppendLine("Runway Summary:");
+            foreach (Runway r in Runways)
             {
-                details.Add(runway.GiveDetails());
+                x.AppendLine(r.GiveDetails());
             }
-            foreach (string x in details)
-            {
-                yield return x;
-            }
+            return x.ToString();
         }
 
-        public Runway? SearchClearRunway()
+        private Runway? SearchClearRunway()
         {
             return Runways.Find(x => x.IsClear == true);
         }
@@ -82,7 +83,7 @@ namespace AirportAdam
             do
             {
                 int asciiNr = random.Next(48, 91);
-                if (asciiNr >= 58 && asciiNr > 65)
+                if (asciiNr >= 58 && asciiNr < 65)
                 {
                     continue;
                 }

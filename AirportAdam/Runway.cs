@@ -25,9 +25,14 @@ namespace AirportAdam
             {
                 clearStatus = "Clear";
             }
-            return new StringBuilder($"Runway code: {RunwayCode} / Status: {clearStatus}").ToString();
+            return new StringBuilder($" - Runway code: {RunwayCode} / Status: {clearStatus}").ToString();
         }
 
-        
+        public override string ToString()
+        {
+            return RunwayCode.ToString();
+        }
+
+
     }
 }

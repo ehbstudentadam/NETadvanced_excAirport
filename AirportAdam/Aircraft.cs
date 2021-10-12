@@ -24,23 +24,26 @@ namespace AirportAdam
         {
             if (Status == AircraftStatus.TakeoffApproved)
             {
-                return new StringBuilder($"Flight {FlightNumber} has taken off on runway {AssignedRunway.RunwayCode}").ToString();
-                Status = AircraftStatus.Airborne;
-                AssignedRunway.IsClear = true;
-                AssignedRunway = null;
+                try
+                {
+                    Status = AircraftStatus.Airborne;
+                    AssignedRunway.IsClear = true;                    
+                    return new StringBuilder().AppendLine($"Flight {FlightNumber} has taken off on runway {AssignedRunway.RunwayCode}").ToString();
+                }
+                finally
+                {
+                    AssignedRunway = null;
+                }                 
             }
             else
             { 
-                return new StringBuilder($"Takeoff not possible. Current status: {this.Status}").ToString();
+                return new StringBuilder().AppendLine($"Takeoff not possible. Current status: {this.Status}").ToString();
             }
-
-            
-
         }
 
         public string GiveDetails()
         {
-            return new StringBuilder($"FlightNumber: {FlightNumber} / Status: {Status} / Assigned runway: {AssignedRunway}").ToString();
+            return new StringBuilder($" - FlightNumber: {FlightNumber} / Status: {Status} / Assigned runway: {AssignedRunway}").ToString();
         }
 
 
